@@ -1,20 +1,21 @@
-require('babel-register')();
+const jsdom = require('jsdom').jsdom;
 
-var jsdom = require('jsdom').jsdom;
+const noop = () => {};
 
-var exposedProperties = ['window', 'navigator', 'document'];
+require.extensions['.css'] = noop;
+require.extensions['.ico'] = noop;
+require.extensions['.png'] = noop;
+require.extensions['.svg'] = noop;
 
 global.document = jsdom('');
 global.window = document.defaultView;
+global.window.Storage = () => {};
 Object.keys(document.defaultView).forEach((property) => {
   if (typeof global[property] === 'undefined') {
-    exposedProperties.push(property);
     global[property] = document.defaultView[property];
   }
 });
 
 global.navigator = {
-  userAgent: 'node.js'
+  userAgent: 'node.js',
 };
-
-documentRef = document;
